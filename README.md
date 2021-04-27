@@ -143,7 +143,7 @@ const Weather = ({ city }) => {
   const [location, setLocation] = useState("")
 
   useEffect(() => {
-    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}&units=metric&&lang=fr`
+    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}&units=metric&lang=fr`
     fetch(query)
       .then((response) => {
         if (!response.ok) {
