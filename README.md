@@ -254,17 +254,38 @@ export default Humidity
 
 ## Et si on pouvait choisir la ville ?
 
+```javascript
+/* src/App.js */
+import { useState } from "react"
+import WeatherApp from "./components/Weather"
+import CityForm from "./components/CityForm"
+
+function App() {
+  const [city, setCity] = useState("Paris")
+  return (
+    <div className="container my-4">
+      <h1 className="display-3 text-center mb-4">Météo Actuelle</h1>
+      <WeatheApp city={city} />
+      <CityForm city={city} setCity={setCity} />
+    </div>
+  )
+}
+
+export default App
+```
+
 ## CityForm Component
 
 ```javascript
+/* src/components/CityForm.js */
 const CityForm = ({ setCity }) => {
-  const submitHandler = (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault()
     setCity(e.target.elements.city.value)
     e.target.reset()
   }
   return (
-    <form onSubmit={submitHandler}>
+    <form onSubmit={handleFormSubmit}>
       <div className="input-group mb-2">
         <label className="input-group-text" htmlFor="city">
           Choisissez une ville
@@ -276,4 +297,32 @@ const CityForm = ({ setCity }) => {
 }
 
 export default CityForm
+```
+
+```js
+/* src/components/WeatherApp.js */
+useEffect(() => {
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}&units=metric&lang=fr`
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("météo untrouvable")
+      }
+      return response.json()
+    })
+    .then((data) => {
+      console.log(data)
+      setLocation(`${data.name}, ${data.sys.country}`)
+      setConditions({
+        feelsLike: Math.round(data.main.feels_like),
+        mainTemp: Math.round(data.main.temp),
+        humidity: data.main.humidity
+      })
+      setDescription(data.weather[0].description)
+      setIconID(data.weather[0].icon)
+    })
+    .catch((error) => {
+      alert(error.message)
+    })
+}, [city])
 ```
