@@ -128,7 +128,7 @@ Voici la structure des fichiers
 Notre compenent `Weather` devient
 
 ```javascript
-// src/components/WeatherApp.js
+/* src/components/WeatherApp.js */
 
 import { useState, useEffect } from "react"
 import Icon from "./Icon"
@@ -186,7 +186,7 @@ export default Weather
 ## Description
 
 ```javascript
-// src/components/Description.js
+/* src/components/Description.js */
 const Description = ({ description }) => {
   return <p>{description}</p>
 }
@@ -197,7 +197,7 @@ export default Description
 ## Temperature
 
 ```javascript
-// src/components/Temperature.js
+/* src/components/Temperature.js */
 const Temperature = ({ mainTemp, feelsLike }) => {
   return (
     <p>
@@ -212,7 +212,7 @@ export default Temperature
 ## Icon
 
 ```javascript
-// src/components/Icon.js
+/* src/components/Icon.js */
 const Icon = ({ iconID }) => {
   return (
     !!iconID && (
@@ -232,7 +232,7 @@ export default Icon
 ## Humidity
 
 ```javascript
-// src/components/Humidity.js
+/* src/components/Humidity.js */
 const Humidity = ({ humidity }) => {
   return (
     <p>
