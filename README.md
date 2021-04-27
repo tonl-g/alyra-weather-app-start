@@ -2,12 +2,7 @@
 
 ## Installation
 
-```bash
-npx create-react-app react-weather-app
-cd react-weather-app
-```
-
-installer et importer bootstrap5
+Ce projet est créé avec CRA et utilise Bootstrap 5.
 
 ```bash
 yarn add bootstrap@next
