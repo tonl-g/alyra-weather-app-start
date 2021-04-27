@@ -1,13 +1,11 @@
 # Weather App
 
-## Step 0
+## Installation
 
 ```bash
 npx create-react-app react-weather-app
 cd react-weather-app
 ```
-
-## Step 1 - src/index.js
 
 installer et importer bootstrap5
 
@@ -15,9 +13,9 @@ installer et importer bootstrap5
 yarn add bootstrap@next
 ```
 
-## Components folder
+## Architecture
 
-Nous allons placer tous les components dans un nouveau dossier `components`. Voici la structure que nous allons créer :
+Nous allons placer tous les components dans un nouveau dossier `components`. Voici la structure :
 
 ```bash
 src
@@ -123,7 +121,7 @@ REACT_APP_OPENWEATHER_API_KEY=votrekeyvientici
 
 Ensuite, dans `WeatherApp.js` nous allons avoir accès à notre key en tant qu `process.env.REACT_APP_OPENWEATHER_API_KEY`
 
-## Step 6 Décomposer Weather en plus de composants
+## Décomposer WeatherApp en plusieurs components
 
 Voici la structure des fichiers
 
@@ -150,11 +148,10 @@ const Weather = ({ city }) => {
     const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=${APP_KEY}&units=metric&&lang=fr`
     fetch(query)
       .then((response) => {
-        if (response.ok) {
-          return response.json()
+        if (!response.ok) {
+          throw new Error("météo untrouvable")
         }
-        console.log(response)
-        throw new Error("météo untrouvable")
+        return response.json()
       })
       .then((data) => {
         setLocation(`${data.name}, ${data.sys.country}`)
@@ -223,7 +220,7 @@ const Icon = ({ iconID }) => {
   return (
     !!iconID && (
       <img
-        src={`http://openweathermap.org/img/wn/${iconID}@4x.png`}
+        src={`https://openweathermap.org/img/wn/${iconID}@4x.png`}
         alt=""
         width="100"
         height="100"
