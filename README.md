@@ -38,7 +38,6 @@ Pour l'instant nous allons afficher des conditions météo pour Paris. (Dans la 
 import WeatherApp from "./components/WeatherApp"
 
 function App() {
-  const [city, setCity] = useState("Paris")
   return (
     <div className="container my-4">
       <h1 className="display-3 text-center mb-4">Météo Actuelle</h1>
@@ -57,11 +56,11 @@ import { useState, useEffect } from "react"
 
 const Weather = ({ city }) => {
   useEffect(() => {
-    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=xxxxxx&units=metric&lang=fr`
-    fetch(query)
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=xxxxxx&units=metric&lang=fr`
+    fetch(url)
       .then((response) => {
         if (!response.ok) {
-          throw new Error("météo untrouvable")
+          throw new Error("Météo untrouvable")
         }
         return response.json()
       })
@@ -138,8 +137,8 @@ const Weather = ({ city }) => {
   const [location, setLocation] = useState("")
 
   useEffect(() => {
-    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}&units=metric&lang=fr`
-    fetch(query)
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}&units=metric&lang=fr`
+    fetch(url)
       .then((response) => {
         if (!response.ok) {
           throw new Error("météo untrouvable")
