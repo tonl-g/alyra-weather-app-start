@@ -92,7 +92,7 @@ export default Weather
 
 Quelle informations de `data` allons nous utiliser ? Nous pouvons opter pour :
 
-- ** conditions : **
+- **conditions :**
 
 ```javascript
 {
@@ -102,9 +102,9 @@ Quelle informations de `data` allons nous utiliser ? Nous pouvons opter pour :
 }
 ```
 
-- ** description : ** `data.weather[0].description`
-- ** icon : ** `data.weather[0].icon`
-- ** location : ** `data.name`, `data.sys.country`
+- **description :** `data.weather[0].description`
+- **icon :** `data.weather[0].icon`
+- **location :** `data.name`, `data.sys.country`
 
 ## .env
 
@@ -241,11 +241,9 @@ export default Icon
 // src/components/Humidity.js
 const Humidity = ({ humidity }) => {
   return (
-    <>
-      <p>
-        <b>humidité</b> {humidity}%
-      </p>
-    </>
+    <p>
+      <b>humidité</b> {humidity}%
+    </p>
   )
 }
 
