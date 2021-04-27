@@ -62,7 +62,7 @@ import { useState, useEffect } from "react"
 
 const Weather = ({ city }) => {
   useEffect(() => {
-    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=xxxxxx&units=metric&&lang=fr`
+    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=xxxxxx&units=metric&lang=fr`
     fetch(query)
       .then((response) => {
         if (!response.ok) {
