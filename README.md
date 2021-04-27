@@ -1,70 +1,279 @@
-# Getting Started with Create React App
+# Weather App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Step 0
 
-## Available Scripts
+```bash
+npx create-react-app react-weather-app
+cd react-weather-app
+```
 
-In the project directory, you can run:
+## Step 1 - src/index.js
 
-### `yarn start`
+installer et importer bootstrap5
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```bash
+yarn add bootstrap@next
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Components folder
 
-### `yarn test`
+Nous allons placer tous les components dans un nouveau dossier `components`. Voici la structure que nous allons créer :
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+src
+├── App.js
+├── App.test.js
+├── components
+│   ├── CityForm.js
+│   ├── Description.js
+│   ├── Humidity.js
+│   ├── Icon.js
+│   ├── Temperature.js
+│   └── WeatherApp.js
+├── index.css
+├── index.js
+├── reportWebVitals.js
+└── setupTests.js
+```
 
-### `yarn build`
+## App.js
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Pour l'instant nous allons afficher des conditions météo pour Paris. (Dans la version finale, un formulaire permettra de choisir la destination.)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```javascript
+/* src/App.js */
+import WeatherApp from "./components/WeatherApp"
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+function App() {
+  const [city, setCity] = useState("Paris")
+  return (
+    <div className="container my-4">
+      <h1 className="display-3 text-center mb-4">Météo Actuelle</h1>
+      <WeatherApp />
+    </div>
+  )
+}
 
-### `yarn eject`
+export default App
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## WeatherApp component
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```javascript
+import { useState, useEffect } from "react"
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+const Weather = ({ city }) => {
+  useEffect(() => {
+    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=xxxxxx&units=metric&&lang=fr`
+    fetch(query)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("météo untrouvable")
+        }
+        return response.json()
+      })
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+  }, [])
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+  return (
+    <section className="text-center">
+      <h2 className="mb-4">Conditions météo à Paris</h2>
+    </section>
+  )
+}
 
-## Learn More
+export default Weather
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Quelle informations de `data` allons nous utiliser ? Nous pouvons opter pour :
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- ** conditions : **
 
-### Code Splitting
+```javascript
+{
+  feelsLike: Math.round(data.main.feels_like),
+  mainTemp: Math.round(data.main.temp),
+  humidity: data.main.humidity,
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- ** description : ** `data.weather[0].description`
+- ** icon : ** `data.weather[0].icon`
+- ** location : ** `data.name`, `data.sys.country`
 
-### Analyzing the Bundle Size
+## .env
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Les clés API sont souvent gardées dans un fichier `.env` dans la racine du projet. Nous allons utiliser `.env.local`. Vous poucez vérifier que `.env.local` est inclue dans `.gitignore`)
 
-### Making a Progressive Web App
+Attention le nom de la variable [doit commencer par REACT_APP](https://create-react-app.dev/docs/adding-custom-environment-variables/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```bash
+touch .env.local
+```
 
-### Advanced Configuration
+```
+# .env.local
+REACT_APP_OPENWEATHER_API_KEY=votrekeyvientici
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Ensuite, dans `WeatherApp.js` nous allons avoir accès à notre key en tant qu `process.env.REACT_APP_OPENWEATHER_API_KEY`
 
-### Deployment
+## Step 6 Décomposer Weather en plus de composants
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Voici la structure des fichiers
 
-### `yarn build` fails to minify
+Notre compenent `Weather` devient
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```javascript
+// src/components/WeatherApp.js
+
+import { useState, useEffect } from "react"
+import Icon from "./Icon"
+import Description from "./Description"
+import Temperature from "./Temperature"
+import Humidity from "./Humidity"
+
+const APP_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY
+
+const Weather = ({ city }) => {
+  const [conditions, setConditions] = useState({})
+  const [description, setDescription] = useState("")
+  const [iconID, setIconID] = useState("")
+  const [location, setLocation] = useState("")
+
+  useEffect(() => {
+    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=${APP_KEY}&units=metric&&lang=fr`
+    fetch(query)
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
+        console.log(response)
+        throw new Error("météo untrouvable")
+      })
+      .then((data) => {
+        setLocation(`${data.name}, ${data.sys.country}`)
+        setConditions({
+          feelsLike: Math.round(data.main.feels_like),
+          mainTemp: Math.round(data.main.temp),
+          humidity: data.main.humidity
+        })
+        setDescription(data.weather[0].description)
+        setIconID(data.weather[0].icon)
+      })
+      .catch((error) => {
+        setLocation("")
+        alert(error.message)
+      })
+  }, [])
+  return (
+    <>
+      {!!location && (
+        <section className="text-center">
+          <Icon iconID={iconID} />
+          <h2 className="mb-4">Conditions météo à {location}</h2>
+          <Description description={description} />
+          <Temperature mainTemp={mainTemp} feelsLike={feelsLike} />
+          <Humidity humidity={humidity} />
+        </section>
+      )}
+    </>
+  )
+}
+
+export default Weather
+```
+
+## Description
+
+```javascript
+// src/components/Description.js
+const Description = ({ description }) => {
+  return <p>{description}</p>
+}
+
+export default Description
+```
+
+## Temperature
+
+```javascript
+// src/components/Temperature.js
+const Temperature = ({ mainTemp, feelsLike }) => {
+  return (
+    <p>
+      <b>température</b> {mainTemp}&deg;C - ressentie {feelsLike}&deg;C
+    </p>
+  )
+}
+
+export default Temperature
+```
+
+## Icon
+
+```javascript
+// src/components/Icon.js
+const Icon = ({ iconID }) => {
+  return (
+    !!iconID && (
+      <img
+        src={`http://openweathermap.org/img/wn/${iconID}@4x.png`}
+        alt=""
+        width="100"
+        height="100"
+      />
+    )
+  )
+}
+
+export default Icon
+```
+
+## Humidity
+
+```javascript
+// src/components/Humidity.js
+const Humidity = ({ humidity }) => {
+  return (
+    <>
+      <p>
+        <b>humidité</b> {humidity}%
+      </p>
+    </>
+  )
+}
+
+export default Humidity
+```
+
+## Et si on pouvait choisir la ville ?
+
+## CityForm Component
+
+```javascript
+const CityForm = ({ setCity }) => {
+  const submitHandler = (e) => {
+    e.preventDefault()
+    setCity(e.target.elements.city.value)
+    e.target.reset()
+  }
+  return (
+    <form onSubmit={submitHandler}>
+      <div className="input-group mb-2">
+        <label className="input-group-text" htmlFor="city">
+          Choisissez une ville
+        </label>
+        <input className="form-control" id="city" required />
+      </div>
+    </form>
+  )
+}
+
+export default CityForm
+```
