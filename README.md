@@ -136,8 +136,6 @@ import Description from "./Description"
 import Temperature from "./Temperature"
 import Humidity from "./Humidity"
 
-const APP_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY
-
 const Weather = ({ city }) => {
   const [conditions, setConditions] = useState({})
   const [description, setDescription] = useState("")
@@ -145,7 +143,7 @@ const Weather = ({ city }) => {
   const [location, setLocation] = useState("")
 
   useEffect(() => {
-    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=${APP_KEY}&units=metric&&lang=fr`
+    const query = `https://api.openweathermap.org/data/2.5/weather?q=Paris&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}&units=metric&&lang=fr`
     fetch(query)
       .then((response) => {
         if (!response.ok) {
@@ -164,7 +162,6 @@ const Weather = ({ city }) => {
         setIconID(data.weather[0].icon)
       })
       .catch((error) => {
-        setLocation("")
         alert(error.message)
       })
   }, [])
